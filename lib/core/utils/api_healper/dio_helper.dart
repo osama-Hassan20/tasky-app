@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tasky/core/utils/api_healper/api_interceptor.dart';
-import 'package:tasky/core/utils/api_healper/status_code.dart';
-import '../error/exceptions.dart';
 import '../local_service_helper/cache_helper.dart';
 import '../local_service_helper/constant.dart';
 import 'end_point.dart';

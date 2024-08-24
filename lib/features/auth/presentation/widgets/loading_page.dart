@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class NewsCardSkelton extends StatefulWidget {
   const NewsCardSkelton({Key? key}) : super(key: key);

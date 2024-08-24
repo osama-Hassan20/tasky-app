@@ -8,13 +8,11 @@ class CustomImageHeader extends StatelessWidget {
   final double? aspectRatio;
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: AspectRatio(
-        aspectRatio: aspectRatio ?? 375 / 482,
-        child: Image.asset(
-          ImageAssets.authHeaderImage,
-          fit: BoxFit.fitWidth,
-        ),
+    return AspectRatio(
+      aspectRatio: aspectRatio ?? 375 / 482,
+      child: Image.asset(
+        ImageAssets.authHeaderImage,
+        fit: BoxFit.fitWidth,
       ),
     );
   }
