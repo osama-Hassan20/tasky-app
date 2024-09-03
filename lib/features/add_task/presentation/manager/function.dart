@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/select_image.dart';
 import 'cubit/cubit.dart';
 
-void showSelectPhotoOptions(BuildContext context,AddTaskCubit cubit) {
+void showSelectPhotoOptions(BuildContext context, AddTaskCubit cubit) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -20,8 +20,7 @@ void showSelectPhotoOptions(BuildContext context,AddTaskCubit cubit) {
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
-            child:
-            SelectImage(
+            child: SelectImage(
               onTap: cubit.getPostImage,
             ),
           );

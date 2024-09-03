@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +55,7 @@ class TaskDetailsView extends StatelessWidget {
                   angle: -1.57079633 * 2,
                   child: SvgPicture.asset(
                     ImageAssets.arrowIcon,
+                    // ignore: deprecated_member_use
                     color: Colors.black,
                   )),
             ),

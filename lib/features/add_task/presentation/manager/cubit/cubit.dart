@@ -15,15 +15,10 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   static AddTaskCubit get(context) => BlocProvider.of(context);
 
-  //Image
   File? taskImage;
 
-  ///data/user/0/com.example.tasky/cache/f0d40a68-c236-4719-9dc4-762b5a42bec6/1000406394.jpg
-  ///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
-  ///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
   ImagePicker picker = ImagePicker();
 
-  /// test image
   File? imageFile;
   String path = '';
   Future<void> pickImage(ImageSource imageSource) async {
@@ -34,9 +29,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     );
     if (image != null) {
       imageFile = File(image.path);
-      // List<int> imageBytes = imageFile!.readAsBytesSync();
-      // final base64Image = base64Encode(imageBytes);
-      // await uploadImage();
+
       uploadImageTest();
       emit(PickImageSuccessState());
     }
@@ -54,18 +47,6 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     }
   }
 
-  // Future<void> uploadImageTest() async {
-  //   path = '';
-  //   emit(UploadImageLoadingState());
-
-  //   final response = await homeRepositoryImpl.uploadImage(imageFile!);
-  //   response.fold((error) => emit(UploadImageErrorState(error: error.error)),
-  //       (image) {
-  //     path = image;
-  //     emit(UploadImageSuccessState());
-  //   });
-  // }
-
   Future<void> uploadImageTest() async {
     FormData fromData = FormData();
     fromData.files.add(MapEntry(
@@ -78,7 +59,6 @@ class AddTaskCubit extends Cubit<AddTaskState> {
         )));
     DioHelper.postData(
       url: EndPoint.uploadImage,
-      //  isFormData: true,
       data: fromData,
     ).then((value) {
       path = value.data['image'];
@@ -92,18 +72,6 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       }
     });
   }
-
-  // Future<void> getTaskImage(ImageSource imageSource) async {
-  //   final pickedFile = await picker.pickImage(source: imageSource);
-  //   if (pickedFile != null) {
-  //     taskImage = File(pickedFile.path);
-  //     print('taskImage = $taskImage');
-  //     emit(HomeTaskImagePickedSuccessState());
-  //   } else {
-  //     print('No image selected');
-  //     emit(HomeTaskImagePickedErrorState(pickedFile.toString()));
-  //   }
-  // }
 
   PlatformFile? platformFile;
 
@@ -121,9 +89,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       platformFile = pickedFile.files.first;
       taskImage = File(platformFile!.path!);
       print('taskImage = $taskImage');
-      // OpenFile.open(platformFile!.path);
-      // fileToDisplay = File(platformFile!.path.toString());
-      // taskImage = File(pickedFile!.files.first.path);
+
       uploadImage(image: taskImage!);
       emit(HomeTaskImagePickedSuccessState());
     } else {
@@ -183,7 +149,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       },
     ).then((value) async {
       HomeCubit.get(context).getTasks(page: 1);
-      // removeTaskImage();
+
       emit(AddTaskSuccess());
     }).catchError((onError) {
       emit(AddTaskError());
@@ -199,10 +165,6 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     required File? image,
     required BuildContext context,
   }) async {
-    //_id: 66c82b33ed5aa194fac25618
-    ///data/user/0/com.example.tasky/cache/file_picker/1724394273304/JPEG_20240823_092433_1956854947796240328.jpg
-    ///user: 66c7ad12ed5aa194fac25383
-    // print('id ==== $id');
     print('taskImage!.path ${taskImage!.path}');
     print('taskId === $taskId');
     emit(EditTaskLoading());

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tasky/features/home/presentation/widgets/mytask_header.dart';
-import 'package:tasky/features/home/presentation/widgets/tasks_list_view.dart';
 import '../../../../core/utils/size_config.dart';
 import '../manager/home_cubit/cubit.dart';
 
@@ -22,8 +21,6 @@ class HomeViewBody extends StatelessWidget {
           MyTasksHeader(
             cubit: cubit,
           ),
-          // SizedBox(height: SizeConfig.defaultSize! * 1.6,),
-          // const TasksListView(),
         ],
       ),
     );

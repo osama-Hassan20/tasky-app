@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,10 +53,13 @@ class HomeCubit extends Cubit<HomeState> {
 
   String status = 'tasks';
   bool hasMore = true;
+  int initialPage = 1;
 
   Future<void> getTasks({required int page}) async {
+    log('message page ================ $page');
     if (page == 1) {
       tasksModel = [];
+      initialPage = 1;
     }
     hasMore = true;
     emit(TasksLoadingState());

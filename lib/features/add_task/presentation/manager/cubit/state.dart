@@ -13,11 +13,7 @@ final class AddTaskLoading extends AddTaskState {}
 
 final class AddTaskSuccess extends AddTaskState {}
 
-final class AddTaskError extends AddTaskState {
-  // final String error;
-  //
-  // AddTaskError(this.error);
-}
+final class AddTaskError extends AddTaskState {}
 
 final class UploadImageLoading extends AddTaskState {}
 
@@ -37,11 +33,7 @@ final class EditTaskLoading extends AddTaskState {}
 
 final class EditTaskSuccess extends AddTaskState {}
 
-final class EditTaskError extends AddTaskState {
-  // final String error;
-  //
-  // AddTaskError(this.error);
-}
+final class EditTaskError extends AddTaskState {}
 
 final class RemoveTaskImageState extends AddTaskState {}
 

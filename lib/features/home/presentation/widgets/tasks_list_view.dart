@@ -11,9 +11,6 @@ import '../manager/home_cubit/cubit.dart';
 import '../manager/home_cubit/state.dart';
 import 'default_item.dart';
 
-/*{
-
-}*/
 class TasksListView extends StatefulWidget {
   const TasksListView({super.key, required this.cubit});
   final HomeCubit cubit;
@@ -22,7 +19,6 @@ class TasksListView extends StatefulWidget {
 }
 
 class _TasksListViewState extends State<TasksListView> {
-  int page = 1;
   ScrollController scrollController = ScrollController();
   Future<void> _onRefresh() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -32,57 +28,24 @@ class _TasksListViewState extends State<TasksListView> {
     });
   }
 
-  // bool isLoadMore =false;
   @override
   void initState() {
     super.initState();
-    // widget.cubit.getTasks(page: 1);
+
+    widget.cubit.getTasks(page: 1);
     scrollController.addListener(() async {
-      if (scrollController.offset ==
+      if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         setState(() {
           widget.cubit.isLoadDown = true;
         });
-        // page++;
-        // await widget.cubit.getTasks(page: page);
-        if (widget.cubit.hasMore == true) {
-          page++;
-          await widget.cubit.getTasks(page: page);
-        }
-
+        widget.cubit.initialPage++;
+        await widget.cubit.getTasks(page: widget.cubit.initialPage);
         setState(() {
           widget.cubit.isLoadDown = false;
         });
       }
     });
-    //     scrollController.addListener(()async{
-    //   if(scrollController.position.pixels == scrollController.position.minScrollExtent){
-
-    //     setState(() {
-    //     widget.cubit.isLoadUp = true;
-    //     });
-    //     page = page -1;
-    //     await widget.cubit.getTasks(page: page);
-    //     setState(() {
-    //       widget.cubit.isLoadUp = false;
-    //     });
-    //   }
-    // });
-    // scrollController.removeListener(
-    //   ()async{
-    //   if(scrollController.position.pixels == scrollController.position.minScrollExtent){
-
-    //     setState(() {
-    //       widget.cubit.isLoadMore = true;
-    //     });
-    //     page = page -1;
-    //     await widget.cubit.getTasks(page: page);
-    //     setState(() {
-    //       widget.cubit.isLoadMore = false;
-    //     });
-    //   }
-    // }
-    // );
   }
 
   @override
@@ -102,7 +65,7 @@ class _TasksListViewState extends State<TasksListView> {
 
         return RefreshIndicator(
             onRefresh: _onRefresh,
-            child: state is TasksLoadingState
+            child: state is TasksLoadingState && cubit.tasksModel.isEmpty
                 ? ListView.separated(
                     itemCount: 10,
                     itemBuilder: (context, index) => const NewsCardSkelton(),
@@ -112,10 +75,9 @@ class _TasksListViewState extends State<TasksListView> {
                 : cubit.tasksModel.isNotEmpty
                     ? ListView.builder(
                         controller: scrollController,
-                        // shrinkWrap: true,
-                        // physics: const NeverScrollableScrollPhysics(),
-                        // itemCount: cubit.tasksModel.length,
-                        itemCount: cubit.tasksModel.length + 1,
+                        itemCount: widget.cubit.isLoadDown
+                            ? cubit.tasksModel.length + 1
+                            : cubit.tasksModel.length,
                         itemBuilder: (BuildContext context, int index) {
                           log('${cubit.counter}');
                           if (index >= cubit.tasksModel.length) {
@@ -182,8 +144,3 @@ class emptyWidget extends StatelessWidget {
     );
   }
 }
-// for (int index = 0; index < widget.cubit.tasksModel.length; index++) {
-//                             if (widget.cubit.tasksModel[index].status == cubit.status) {}
-//                               navigateTo(context, TaskDetailsView(taskModel: widget.cubit.tasksModel[index]));
-//                             }
-//                           }

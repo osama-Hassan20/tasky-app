@@ -11,6 +11,7 @@ import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/core/utils/navigate.dart';
 import 'package:tasky/core/utils/size_config.dart';
 import 'package:tasky/core/widgets/custom_button.dart';
+import 'package:tasky/core/widgets/custom_cached_network_image.dart';
 import 'package:tasky/core/widgets/custom_loading_animation.dart';
 import 'package:tasky/core/widgets/text_form_field.dart';
 import 'package:tasky/features/add_task/presentation/manager/cubit/cubit.dart';
@@ -19,12 +20,14 @@ import 'package:tasky/features/add_task/presentation/widgets/custom_title_tasks.
 import 'package:tasky/features/home/domain/models/tasks_model.dart';
 import 'package:tasky/features/home/presentation/home_view.dart';
 
-
 // ignore: must_be_immutable
 class EditTaskView extends StatefulWidget {
-   EditTaskView({super.key, this.taskModel,});
-  
-   TasksModel? taskModel;
+  EditTaskView({
+    super.key,
+    this.taskModel,
+  });
+
+  TasksModel? taskModel;
 
   @override
   State<EditTaskView> createState() => _EditTaskViewState();
@@ -37,25 +40,27 @@ class _EditTaskViewState extends State<EditTaskView> {
   final TextEditingController descriptionController = TextEditingController();
 
   final TextEditingController priorityController = TextEditingController();
-    final TextEditingController statusController = TextEditingController();
+  final TextEditingController statusController = TextEditingController();
 
   final TextEditingController dueDateController = TextEditingController();
 
   String priority = '';
 
   String image = '';
-@override
+  @override
   void initState() {
-    print('priorityController.text = widget.taskModel!.priority!;   =  ${widget.taskModel!.priority!}');
-      titleController.text = widget.taskModel!.title!;
-      descriptionController.text = widget.taskModel!.desc!;
-      priorityController.text = widget.taskModel!.priority!;
-      dueDateController.text = widget.taskModel!.updatedAt!;
-      statusController.text = widget.taskModel!.status!;
-      priority = priorityController.text ;
+    print(
+        'priorityController.text = widget.taskModel!.priority!;   =  ${widget.taskModel!.priority!}');
+    titleController.text = widget.taskModel!.title!;
+    descriptionController.text = widget.taskModel!.desc!;
+    priorityController.text = widget.taskModel!.priority!;
+    dueDateController.text = widget.taskModel!.updatedAt!;
+    statusController.text = widget.taskModel!.status!;
+    priority = priorityController.text;
 
     super.initState();
   }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -70,12 +75,10 @@ class _EditTaskViewState extends State<EditTaskView> {
   Widget build(BuildContext context) {
     return BlocConsumer<AddTaskCubit, AddTaskState>(
       listener: (context, state) {
-        var cubit = AddTaskCubit.get(context);
         if (state is EditTaskSuccess) {
           CherryToast.success(
             title: const Text('Edited Successfully'),
             animationType: AnimationType.fromTop,
-    
           ).show(context);
           navigateAndFinish(context, HomeView());
         }
@@ -83,9 +86,7 @@ class _EditTaskViewState extends State<EditTaskView> {
       builder: (context, state) {
         var cubit = AddTaskCubit.get(context);
         // if(widget.taskEdit!){
-          cubit.taskImage = File(widget.taskModel!.image!) ;
-          ///data/user/0/com.example.tasky/cache/file_picker/1724372809612/JPEG_20240823_032649_1645724087387685552.jpg
-        // }
+        cubit.taskImage = File(widget.taskModel!.image!);
         return Scaffold(
           appBar: AppBar(
               title: Text('Edit task',
@@ -99,6 +100,7 @@ class _EditTaskViewState extends State<EditTaskView> {
                     angle: -1.57079633 * 2,
                     child: SvgPicture.asset(
                       ImageAssets.arrowIcon,
+                      // ignore: deprecated_member_use
                       color: Colors.black,
                     )),
               )),
@@ -125,16 +127,14 @@ class _EditTaskViewState extends State<EditTaskView> {
                             ? Stack(
                                 alignment: AlignmentDirectional.topEnd,
                                 children: [
-                                  Container(
-                                    height: 200.0,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                        image: FileImage(cubit.taskImage!),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                  ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(maxHeight: 225),
+                                    child: SizedBox(
+                                        width: double.maxFinite,
+                                        child: CustomCachedNetworkImage(
+                                            imageUrl:
+                                                '${widget.taskModel!.image}')),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -343,9 +343,7 @@ class _EditTaskViewState extends State<EditTaskView> {
                                 ),
                               ],
                               onChanged: (value) {
-                                statusController.text =
-                                    '${value.toString()}';
-                
+                                statusController.text = '${value.toString()}';
                               },
                             ),
                           ),
@@ -399,7 +397,7 @@ class _EditTaskViewState extends State<EditTaskView> {
                     ),
                     CustomButton(
                       text:
-                          state is EditTaskLoading ? 'Loading...' :'Edit Task' ,
+                          state is EditTaskLoading ? 'Loading...' : 'Edit Task',
                       widget: state is EditTaskLoading
                           ? const CustomLoadingAnimation(
                               color: Colors.white,
@@ -410,14 +408,13 @@ class _EditTaskViewState extends State<EditTaskView> {
                         if (cubit.taskImage != null) {
                           if (formKey.currentState!.validate()) {
                             cubit.editTask(
-                              image: File(widget.taskModel!.image!),
-                              title: titleController.text,
-                              desc: descriptionController.text,
-                              priority: priority,
-                              context: context,
-                              status: statusController.text,
-                              taskId: widget.taskModel!.id!
-                            );
+                                image: File(widget.taskModel!.image!),
+                                title: titleController.text,
+                                desc: descriptionController.text,
+                                priority: priority,
+                                context: context,
+                                status: statusController.text,
+                                taskId: widget.taskModel!.id!);
                           }
                         } else {
                           CherryToast.success(

@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tasky/core/utils/app_images.dart';
 import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/core/utils/size_config.dart';
-import 'package:tasky/features/add_task/presentation/manager/function.dart';
 import 'package:tasky/features/add_task/presentation/widgets/custom_title_tasks.dart';
 
 import '../../../core/widgets/custom_button.dart';
@@ -80,6 +79,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                       angle: -1.57079633 * 2,
                       child: SvgPicture.asset(
                         ImageAssets.arrowIcon,
+                        // ignore: deprecated_member_use
                         color: Colors.black,
                       )),
                 )),

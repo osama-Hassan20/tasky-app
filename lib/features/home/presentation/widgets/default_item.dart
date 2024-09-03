@@ -12,7 +12,6 @@ import 'package:tasky/features/task_details/presentation/task_details_view.dart'
 import '../../domain/models/tasks_model.dart';
 import '../manager/home_cubit/cubit.dart';
 import '../manager/home_cubit/state.dart';
-import 'package:path/path.dart' as path;
 
 import 'menu_pop_up.dart';
 import 'package:path_provider/path_provider.dart';
@@ -58,16 +57,12 @@ class DefaultItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //String serverPath = p.basename(localPath);
-                    // CustomCachedNetworkImage(imageUrl: taskModel.image!),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 60),
                       child: AspectRatio(
                         aspectRatio: 1,
-                        child:
-                            // Image.file(File(taskModel.image!)),
-                            CustomCachedNetworkImage(
-                                imageUrl: '${taskModel.image!}'),
+                        child: CustomCachedNetworkImage(
+                            imageUrl: '${taskModel.image!}'),
                       ),
                     ),
                     SizedBox(
