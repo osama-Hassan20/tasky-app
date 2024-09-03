@@ -29,55 +29,63 @@ class HomeView extends StatelessWidget {
       builder: (context, state) {
         HomeCubit cubit = HomeCubit.get(context);
         return Scaffold(
-          body: Column(children: [
-            HomeViewAppbar(
-                    cubit: cubit,
+          body: Column(
+            children: [
+              HomeViewAppbar(
+                cubit: cubit,
+              ),
+              HomeViewBody(
+                cubit: cubit,
+              ),
+              // if(cubit.isLoadUp)
+              // Container(
+              //   padding: const EdgeInsets.only(top: 30, bottom: 40),
+              //   child: Center(
+              //     child: CustomLoadingAnimation(color:Color(0xff5F33E1),)
+              //   ),
+              // ),
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.only(
+                  left: SizeConfig.defaultSize! * 2.2,
+                ),
+                child: TasksListView(
+                  cubit: cubit,
+                ),
+              )),
+              if (cubit.tasksModel.length < 20)
+                Container(
+                  padding: const EdgeInsets.only(top: 30, bottom: 40),
+                  child: Center(
+                    child: cubit.hasMore
+                        ? CustomLoadingAnimation(
+                            color: Color(0xff5F33E1),
+                          )
+                        : Text('no more task to load'),
                   ),
-                  HomeViewBody(
-                        cubit: cubit,
-                      ),
-                      if(cubit.isLoadUp)  
-                      Container(
-                        padding: const EdgeInsets.only(top: 30, bottom: 40),
-                        child: Center(
-                          child: CustomLoadingAnimation(color:Color(0xff5F33E1),)
-                        ),
-                      ),
-                      Expanded(child: Padding(
-                        padding: EdgeInsets.only(left: SizeConfig.defaultSize! * 2.2,),
-                        child: TasksListView(cubit: cubit,),
-                      )),
-                    if(cubit.isLoadDown)  
-                      Container(
-                        padding: const EdgeInsets.only(top: 30, bottom: 40),
-                        child: Center(
-                          child: CustomLoadingAnimation(color:Color(0xff5F33E1),)
-                        ),
-                      ),
-                //       if(true){
-                //     Container(
-                // padding: const EdgeInsets.only(top: 30, bottom: 40),
-                // color: Colors.amber,
-                // child: const Center(
-                //   child: CustomLoadingAnimation(color: Colors.amber,)
-                // )),
-                    
-                //   }
+                ),
+              //       if(true){
+              //     Container(
+              // padding: const EdgeInsets.only(top: 30, bottom: 40),
+              // color: Colors.amber,
+              // child: const Center(
+              //   child: CustomLoadingAnimation(color: Colors.amber,)
+              // )),
 
+              //   }
 
-
-            //           Expanded(
-            //   child: ListView.separated(
-            //     itemBuilder: (context, index) =>Container(
-            //     height: 20,
-            //     color: Colors.amber,
-            //   ),
-            //      separatorBuilder: (context, index) =>SizedBox(height: 5,),
-            //       itemCount: 50
-            //       ),
-            // ),
-            
-          ],),
+              //           Expanded(
+              //   child: ListView.separated(
+              //     itemBuilder: (context, index) =>Container(
+              //     height: 20,
+              //     color: Colors.amber,
+              //   ),
+              //      separatorBuilder: (context, index) =>SizedBox(height: 5,),
+              //       itemCount: 50
+              //       ),
+              // ),
+            ],
+          ),
           // SizedBox(
           //   width: double.maxFinite,
           //   child: CustomScrollView(
@@ -102,7 +110,9 @@ class HomeView extends StatelessWidget {
           //     ],
           //   ),
           // ),
-          floatingActionButton: FloatingActionButtons(cubit: cubit,),
+          floatingActionButton: FloatingActionButtons(
+            cubit: cubit,
+          ),
         );
       },
     );

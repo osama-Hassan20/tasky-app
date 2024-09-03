@@ -17,6 +17,7 @@ class HomeCubit extends Cubit<HomeState> {
   static HomeCubit get(context) => BlocProvider.of(context);
 
   Future<void> logOut(BuildContext context) async {
+    // singOut(context);
     emit(LoadingLogoutSate());
     token = CacheHelper.getData(key: 'TokenId');
     if (kDebugMode) {
@@ -38,7 +39,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   int activeIndex = 0;
-  int counter=0;
+  int counter = 0;
 
   void changeIndex(int index) {
     activeIndex = index;
@@ -46,18 +47,27 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   List<TasksModel> tasksModel = [];
+  List<TasksModel> newTasksModel = [];
 
+  String status = 'tasks';
+  bool hasMore = true;
 
-String status ='tasks' ;
-
-  Future<void> getTasks({int? page}) async {
+  Future<void> getTasks({required int page}) async {
+    if (page == 1) {
+      tasksModel = [];
+    }
+    hasMore = true;
     emit(TasksLoadingState());
     await DioHelper.getDate(
       url: EndPoint.tasks,
-      query: {'page':page ?? 1},
+      query: {'page': page},
     ).then((value) {
-      tasksModel =
+      newTasksModel =
           (value.data as List).map((e) => TasksModel.fromJson(e)).toList();
+      if (newTasksModel.length < 20) {
+        hasMore = false;
+      }
+      tasksModel.addAll(newTasksModel);
       emit(TasksSuccessState());
     }).catchError((onError) {
       if (onError is DioException) {
@@ -85,6 +95,7 @@ String status ='tasks' ;
       }
     });
   }
- bool isLoadDown =false; 
- bool isLoadUp = false;
+
+  bool isLoadDown = false;
+  bool isLoadUp = false;
 }

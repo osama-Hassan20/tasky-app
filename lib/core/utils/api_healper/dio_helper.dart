@@ -31,32 +31,25 @@ class DioHelper {
 
   static Future<Response> getRequest({
     required String url,
-    required Map<String,dynamic>? query ,
+    required Map<String, dynamic>? query,
     required dynamic data,
     required Options option,
-})async{
-    return await dio.request<dynamic>(
-        url,
-        data: data,
-        queryParameters: query,
-        options: option
-    );
-}
+  }) async {
+    return await dio.request<dynamic>(url,
+        data: data, queryParameters: query, options: option);
+  }
 
-
-  static Future<Response> getDate({
-    required String url,
-    Map<String,dynamic>? query ,
-    dynamic data,
-    String tokenVerify = ''
-  }) async
-  {
+  static Future<Response> getDate(
+      {required String url,
+      Map<String, dynamic>? query,
+      dynamic data,
+      String tokenVerify = ''}) async {
     token = CacheHelper.getData(key: 'TokenId');
     // dio.options.headers = {
     //   'Authorization':'Bearer ${tokenVerify.isEmpty ? token : tokenVerify}',
     // };
     return await dio.get(
-      url ,
+      url,
       data: data,
       queryParameters: query,
     );
@@ -64,36 +57,36 @@ class DioHelper {
 
   static Future<Response> postData({
     required String url,
-    Map<String,dynamic>? query ,
-    required dynamic data ,
+    Map<String, dynamic>? query,
+    required dynamic data,
     String tokenVerify = '',
     bool isFormData = false,
-  }) async
-  {
+  }) async {
     token = CacheHelper.getData(key: 'TokenId');
     dio.options.headers = {
-    //   'Authorization':'Bearer ${tokenVerify.isEmpty ? token : tokenVerify}',
-      'Content-Type':isFormData?'multipart/form-data; boundary=<calculated when request is sent>':'application/json'
+      //   'Authorization':'Bearer ${tokenVerify.isEmpty ? token : tokenVerify}',
+      'Content-Type': isFormData
+          ? 'multipart/form-data; boundary=<calculated when request is sent>'
+          : 'application/json'
     };
     return dio.post(
-      url ,
+      url,
       queryParameters: query,
-      data: isFormData? FormData.fromMap(data) :data,
+      data: isFormData ? FormData.fromMap(data) : data,
     );
   }
 
   static Future<Response> putData({
     required String url,
-    Map<String,dynamic>? query ,
-    required dynamic data ,
-  }) async
-  {
+    Map<String, dynamic>? query,
+    required dynamic data,
+  }) async {
     token = CacheHelper.getData(key: 'TokenId');
     // dio.options.headers = {
     //   'Authorization':'Bearer $token',
     // };
     return dio.put(
-      url ,
+      url,
       queryParameters: query,
       data: data,
     );
@@ -102,18 +95,14 @@ class DioHelper {
   static Future<Response> deleteData({
     required String url,
     dynamic data,
-  }) async
-  {
+  }) async {
     token = CacheHelper.getData(key: 'TokenId');
     // dio.options.headers = {
     //   'Authorization':'Bearer $token',
     // };
     return dio.delete(
-      url ,
+      url,
       data: data,
     );
   }
-
-
-
 }

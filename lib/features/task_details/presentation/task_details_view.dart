@@ -27,16 +27,15 @@ class TaskDetailsView extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeState>(
       listener: (context, state) {
         var cubit = HomeCubit.get(context);
-        if(state is DeleteTaskSuccessState){
+        if (state is DeleteTaskSuccessState) {
           CherryToast.success(
             title: const Text('Task Deleted Successfully'),
             animationType: AnimationType.fromTop,
           ).show(context);
           Navigator.pop(context);
-          
-            cubit.getTasks();
-        
-        } else if(state is DeleteTaskErrorState){
+
+          cubit.getTasks(page: 1);
+        } else if (state is DeleteTaskErrorState) {
           CherryToast.error(
             title: Text(state.message),
             animationType: AnimationType.fromTop,
@@ -62,7 +61,11 @@ class TaskDetailsView extends StatelessWidget {
                   )),
             ),
             actions: [
-              MenuPopUp(cubit: cubit, taskModel: taskModel,delete:true,),
+              MenuPopUp(
+                cubit: cubit,
+                taskModel: taskModel,
+                delete: true,
+              ),
             ],
           ),
           body: SingleChildScrollView(
@@ -72,14 +75,15 @@ class TaskDetailsView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.file(File(taskModel.image!)),
+                  // Image.file(File(taskModel.image!)),
                   // Image.asset(ImageAssets.authHeaderImage),
-                  // ConstrainedBox(
-                    // constraints: const BoxConstraints(maxHeight: 225),
-                    // child: SizedBox(
-                        // width: double.maxFinite,
-                        // child: CustomCachedNetworkImage(imageUrl: 'https://todo.iraqsapp.com/images/${taskModel.image!}')),
-                  // ),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 225),
+                    child: SizedBox(
+                        width: double.maxFinite,
+                        child: CustomCachedNetworkImage(
+                            imageUrl: '${taskModel.image!}')),
+                  ),
                   SizedBox(
                     height: SizeConfig.defaultSize! * 1.6,
                   ),
@@ -88,29 +92,34 @@ class TaskDetailsView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        taskModel.title ?? '',
-                        style: AppStyles.styleBold24(context)
-                      ),
-
-                      Text(
-                        taskModel.desc ?? '',
-                        style: AppStyles.styleRegular14(context).copyWith(color: Color(0x9924252C))
-                      ),
-
-                       SizedBox(
-                        height: SizeConfig.defaultSize! * 1.6,
-                      ),
-                      DetailsTitle(text: taskModel.createdAt!.split('T')[0], iconData: Icons.calendar_month,isDate: true,),
+                      Text(taskModel.title ?? '',
+                          style: AppStyles.styleBold24(context)),
+                      Text(taskModel.desc ?? '',
+                          style: AppStyles.styleRegular14(context)
+                              .copyWith(color: Color(0x9924252C))),
                       SizedBox(
                         height: SizeConfig.defaultSize! * 1.6,
                       ),
-                      DetailsTitle(text: taskModel.status ?? '', iconData: Icons.arrow_drop_down_rounded,),
+                      DetailsTitle(
+                        text: taskModel.createdAt!.split('T')[0],
+                        iconData: Icons.calendar_month,
+                        isDate: true,
+                      ),
                       SizedBox(
                         height: SizeConfig.defaultSize! * 1.6,
                       ),
-                      DetailsTitle(isFlag:true ,text: taskModel.priority ?? '', iconData: Icons.arrow_drop_down_rounded,),
-
+                      DetailsTitle(
+                        text: taskModel.status ?? '',
+                        iconData: Icons.arrow_drop_down_rounded,
+                      ),
+                      SizedBox(
+                        height: SizeConfig.defaultSize! * 1.6,
+                      ),
+                      DetailsTitle(
+                        isFlag: true,
+                        text: taskModel.priority ?? '',
+                        iconData: Icons.arrow_drop_down_rounded,
+                      ),
                       const SizedBox(
                         height: 16,
                       ),
@@ -123,7 +132,6 @@ class TaskDetailsView extends StatelessWidget {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),

@@ -13,12 +13,10 @@ class EndPoint {
 
   static const uploadImage = 'upload/image';
 
-  static const refreshToken = 'https://todo.iraqsapp.com/auth/refresh-token';
+  static const refreshToken =
+      'https://todo.iraqsapp.com/auth/refresh-token?token=';
 
-
-
-   static const editTasks = 'todos';
-
+  static const editTasks = 'todos';
 }
 
 class AppStrings {

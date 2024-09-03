@@ -21,7 +21,6 @@ class DefaultItem extends StatelessWidget {
   const DefaultItem({super.key, required this.taskModel});
 
   final TasksModel taskModel;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class DefaultItem extends StatelessWidget {
             title: const Text('Task Deleted Successfully'),
             animationType: AnimationType.fromTop,
           ).show(context);
-          cubit.getTasks();
+          cubit.getTasks(page: 1);
         } else if (state is DeleteTaskErrorState) {
           CherryToast.error(
             title: Text(state.message),
@@ -50,8 +49,8 @@ class DefaultItem extends StatelessWidget {
                 navigateTo(context, TaskDetailsView(taskModel: taskModel));
                 print('object');
                 print(Uri.file(
-    "/data/user/0/com.example.tasky/cache/file_picker/1724304315619/IMG-20240822-WA0014.jpg",
-  ).toString());
+                  "/data/user/0/com.example.tasky/cache/file_picker/1724304315619/IMG-20240822-WA0014.jpg",
+                ).toString());
               },
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 24.0),
@@ -66,9 +65,9 @@ class DefaultItem extends StatelessWidget {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child:
-                        Image.file(File(taskModel.image!)),
-                        // CustomCachedNetworkImage(
-                            // imageUrl: 'https://todo.iraqsapp.com/images/1724267591183-29721-1000404774.jpg'),
+                            // Image.file(File(taskModel.image!)),
+                            CustomCachedNetworkImage(
+                                imageUrl: '${taskModel.image!}'),
                       ),
                     ),
                     SizedBox(
@@ -84,7 +83,8 @@ class DefaultItem extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     style: AppStyles.styleBold16(context)
-                                        .copyWith(color: const Color(0xff24252C))),
+                                        .copyWith(
+                                            color: const Color(0xff24252C))),
                               ),
                               StatusTask(taskModel: taskModel),
                             ],
@@ -132,7 +132,11 @@ class DefaultItem extends StatelessWidget {
                         ],
                       ),
                     ),
-                    MenuPopUp(cubit: cubit, taskModel: taskModel,delete:true,),
+                    MenuPopUp(
+                      cubit: cubit,
+                      taskModel: taskModel,
+                      delete: true,
+                    ),
                   ],
                 ),
               ),
@@ -143,8 +147,9 @@ class DefaultItem extends StatelessWidget {
     );
   }
 }
-        Future<String> getImageUrl({required String url}) async {
-          print('url = = = = = $url');
+
+Future<String> getImageUrl({required String url}) async {
+  print('url = = = = = $url');
   final directory = await getTemporaryDirectory();
   final imagePath = '${directory.path}$url';
   final imageFile = File(imagePath);

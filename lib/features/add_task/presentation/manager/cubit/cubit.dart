@@ -17,11 +17,30 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   //Image
   File? taskImage;
-///data/user/0/com.example.tasky/cache/f0d40a68-c236-4719-9dc4-762b5a42bec6/1000406394.jpg
-///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
-///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
+
+  ///data/user/0/com.example.tasky/cache/f0d40a68-c236-4719-9dc4-762b5a42bec6/1000406394.jpg
+  ///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
+  ///File: '/data/user/0/com.example.tasky/cache/file_picker/1724302232730/IMG-20240822-WA0014.jpg
   ImagePicker picker = ImagePicker();
 
+  /// test image
+  File? imageFile;
+  String path = '';
+  Future<void> pickImage(ImageSource imageSource) async {
+    final ImagePicker picker = ImagePicker();
+
+    XFile? image = await picker.pickImage(
+      source: imageSource,
+    );
+    if (image != null) {
+      imageFile = File(image.path);
+      // List<int> imageBytes = imageFile!.readAsBytesSync();
+      // final base64Image = base64Encode(imageBytes);
+      // await uploadImage();
+      uploadImageTest();
+      emit(PickImageSuccessState());
+    }
+  }
 
   Future<void> getPostImage(ImageSource imageSource) async {
     final pickedFile = await picker.pickImage(source: imageSource);
@@ -34,6 +53,46 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       emit(HomeTaskImagePickedErrorState(pickedFile.toString()));
     }
   }
+
+  // Future<void> uploadImageTest() async {
+  //   path = '';
+  //   emit(UploadImageLoadingState());
+
+  //   final response = await homeRepositoryImpl.uploadImage(imageFile!);
+  //   response.fold((error) => emit(UploadImageErrorState(error: error.error)),
+  //       (image) {
+  //     path = image;
+  //     emit(UploadImageSuccessState());
+  //   });
+  // }
+
+  Future<void> uploadImageTest() async {
+    FormData fromData = FormData();
+    fromData.files.add(MapEntry(
+        'image',
+        await MultipartFile.fromFile(
+          imageFile!.path,
+          filename: imageFile!.path.split('/').last,
+          contentType:
+              DioMediaType.parse("image/${imageFile!.path.split('.').last}"),
+        )));
+    DioHelper.postData(
+      url: EndPoint.uploadImage,
+      //  isFormData: true,
+      data: fromData,
+    ).then((value) {
+      path = value.data['image'];
+      emit(UploadImageSuccess(value.data['image']));
+    }).catchError((onError) {
+      if (onError is DioException) {
+        print(onError.message);
+        print(onError.response);
+        print(onError.response!.data);
+        emit(UploadImageError(onError.response!.data['message']));
+      }
+    });
+  }
+
   // Future<void> getTaskImage(ImageSource imageSource) async {
   //   final pickedFile = await picker.pickImage(source: imageSource);
   //   if (pickedFile != null) {
@@ -55,9 +114,9 @@ class AddTaskCubit extends Cubit<AddTaskState> {
   Future<void> pickFile() async {
     final pickedFile = await FilePicker.platform.pickFiles(
       type: FileType.image,
-    allowMultiple: false,
+      allowMultiple: false,
     );
-    if(pickedFile != null){
+    if (pickedFile != null) {
       fileName = pickedFile.files.first.name;
       platformFile = pickedFile.files.first;
       taskImage = File(platformFile!.path!);
@@ -67,15 +126,15 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       // taskImage = File(pickedFile!.files.first.path);
       uploadImage(image: taskImage!);
       emit(HomeTaskImagePickedSuccessState());
-    }else {
+    } else {
       emit(HomeTaskImagePickedErrorState(pickedFile.toString()));
     }
-    }
-      void removeTaskImage() {
+  }
+
+  void removeTaskImage() {
     taskImage = null;
     emit(RemoveTaskImageState());
   }
-
 
   Future<void> uploadImage({
     required File image,
@@ -90,7 +149,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
         url: EndPoint.uploadImage,
         isFormData: true,
         data: {
-          'image':image,
+          'image': image,
         }).then((value) {
       emit(UploadImageSuccess(value.data['image']));
     }).catchError((onError) {
@@ -111,6 +170,8 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     required BuildContext context,
   }) async {
     emit(AddTaskLoading());
+    print('path = $path');
+    print(path);
     await DioHelper.postData(
       url: EndPoint.tasks,
       data: {
@@ -118,10 +179,10 @@ class AddTaskCubit extends Cubit<AddTaskState> {
         'desc': desc,
         'priority': priority,
         'dueDate': dueDate,
-        'image': taskImage!.path,
+        'image': path,
       },
     ).then((value) async {
-      HomeCubit.get(context).getTasks();
+      HomeCubit.get(context).getTasks(page: 1);
       // removeTaskImage();
       emit(AddTaskSuccess());
     }).catchError((onError) {
@@ -129,7 +190,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     });
   }
 
-    Future<void> editTask({
+  Future<void> editTask({
     required String title,
     required String desc,
     required String priority,
@@ -156,15 +217,11 @@ class AddTaskCubit extends Cubit<AddTaskState> {
         'image': image!.path,
       },
     ).then((value) async {
-      HomeCubit.get(context).getTasks();
+      HomeCubit.get(context).getTasks(page: 1);
       removeTaskImage();
       emit(EditTaskSuccess());
     }).catchError((onError) {
       emit(EditTaskError());
     });
   }
-
-
-
-  
 }

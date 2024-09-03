@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tasky/core/utils/app_images.dart';
 import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/core/utils/size_config.dart';
@@ -53,17 +54,15 @@ class _AddTaskViewState extends State<AddTaskView> {
       child: BlocConsumer<AddTaskCubit, AddTaskState>(
         listener: (context, state) {
           var cubit = AddTaskCubit.get(context);
-          if(state is HomeTaskImagePickedSuccessState){
-      // Navigator.pop(context);
-      cubit.uploadImage(image: cubit.taskImage!);
-    }
+          if (state is HomeTaskImagePickedSuccessState) {
+            cubit.uploadImage(image: cubit.taskImage!);
+          }
           if (state is AddTaskSuccess) {
             CherryToast.success(
               title: const Text('Added Successfully'),
               animationType: AnimationType.fromTop,
-
             ).show(context);
-            Navigator.pop(context);
+            // Navigator.pop(context);
           }
         },
         builder: (context, state) {
@@ -92,10 +91,11 @@ class _AddTaskViewState extends State<AddTaskView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(),
                       InkWell(
-                        onTap: () {
-                          // showSelectPhotoOptions(context,cubit);
-                          cubit.pickFile();
+                        onTap: () async {
+                          await cubit.pickImage(ImageSource.gallery);
+                          // cubit.pickFile();
                         },
                         child: DottedBorder(
                           radius: const Radius.circular(10),
@@ -103,7 +103,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                           strokeWidth: 2,
                           borderType: BorderType.RRect,
                           color: const Color(0xFF5F33E1),
-                          child: cubit.taskImage != null
+                          child: cubit.imageFile != null
                               ? Stack(
                                   alignment: AlignmentDirectional.topEnd,
                                   children: [
@@ -113,7 +113,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         image: DecorationImage(
-                                          image: FileImage(cubit.taskImage!),
+                                          image: FileImage(cubit.imageFile!),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -321,15 +321,14 @@ class _AddTaskViewState extends State<AddTaskView> {
                             : const SizedBox(),
                         style: AppStyles.styleBold19(context),
                         onPressed: () {
-                          if (cubit.taskImage != null) {
+                          if (cubit.imageFile != null) {
                             if (formKey.currentState!.validate()) {
                               cubit.addTask(
-                                title: titleController.text,
-                                desc: descriptionController.text,
-                                priority: priority,
-                                dueDate: dueDateController.text,
-                                context: context
-                              );
+                                  title: titleController.text,
+                                  desc: descriptionController.text,
+                                  priority: priority,
+                                  dueDate: dueDateController.text,
+                                  context: context);
                             }
                           } else {
                             CherryToast.success(

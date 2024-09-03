@@ -10,16 +10,16 @@ class CustomCachedNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-        imageUrl: imageUrl,
+        imageUrl: 'https://todo.iraqsapp.com/images/$imageUrl',
         fit: BoxFit.fill,
         imageBuilder: (context, imageProvider) => Image(
-          image: imageProvider,
-          fit: BoxFit.fill,
-        ),
-        placeholder: (context, url) =>  const CustomLoadingAnimation(),
+              image: imageProvider,
+              fit: BoxFit.fill,
+            ),
+        placeholder: (context, url) => const CustomLoadingAnimation(),
         errorWidget: (context, url, error) {
           print(error.toString());
-          return  const CustomLoadingAnimation();
+          return const CustomLoadingAnimation();
         });
   }
 }

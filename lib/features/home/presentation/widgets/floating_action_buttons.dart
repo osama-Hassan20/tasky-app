@@ -18,12 +18,11 @@ class _FloatingActionButtonsState extends State<FloatingActionButtons> {
   Barcode? result;
   QRViewController? controller;
 
-
   @override
-  void dispose() {
-    controller!.dispose();
-    super.dispose();
-  }
+  // void dispose() {
+  //   controller!.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +53,16 @@ class _FloatingActionButtonsState extends State<FloatingActionButtons> {
                           print('result!.code   =   ${result!.code}');
                           controller.stopCamera();
                           Navigator.pop(context);
-                          for (int index = 0; index < widget.cubit.tasksModel.length; index++) {
-                            if (widget.cubit.tasksModel[index].id == result!.code) {
-                              navigateTo(context, TaskDetailsView(taskModel: widget.cubit.tasksModel[index]));
+                          for (int index = 0;
+                              index < widget.cubit.tasksModel.length;
+                              index++) {
+                            if (widget.cubit.tasksModel[index].id ==
+                                result!.code) {
+                              navigateTo(
+                                  context,
+                                  TaskDetailsView(
+                                      taskModel:
+                                          widget.cubit.tasksModel[index]));
                             }
                           }
                         });
@@ -67,9 +73,14 @@ class _FloatingActionButtonsState extends State<FloatingActionButtons> {
               ),
             );
           },
-          child: const Icon(Icons.qr_code, color: Color(0xff5F33E1),),
+          child: const Icon(
+            Icons.qr_code,
+            color: Color(0xff5F33E1),
+          ),
         ),
-        const SizedBox(height: 14,),
+        const SizedBox(
+          height: 14,
+        ),
         FloatingActionButton(
           heroTag: 'add',
           backgroundColor: const Color(0xff5F33E1),
@@ -79,7 +90,10 @@ class _FloatingActionButtonsState extends State<FloatingActionButtons> {
           onPressed: () {
             navigateTo(context, AddTaskView());
           },
-          child: const Icon(Icons.add, color: Colors.white,),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ],
     );

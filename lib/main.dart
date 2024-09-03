@@ -9,6 +9,7 @@ import 'core/utils/local_service_helper/cache_helper.dart';
 import 'core/utils/local_service_helper/constant.dart';
 import 'core/utils/size_config.dart';
 import 'features/home/presentation/manager/home_cubit/cubit.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
@@ -33,19 +34,17 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         BlocProvider(
-          create: (context) => HomeCubit()..getTasks(),
-          
+          create: (context) => HomeCubit()..getTasks(page: 1),
         ),
         BlocProvider(
           create: (context) => AddTaskCubit(),
-          
         ),
       ],
       child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Tasky App',
-            home: SplashView(),
-          ),
+        debugShowCheckedModeBanner: false,
+        title: 'Tasky App',
+        home: SplashView(),
+      ),
     );
   }
 }

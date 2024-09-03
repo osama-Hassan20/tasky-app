@@ -46,13 +46,12 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        cubit.counter =0;
+        cubit.counter = 0;
         log('${cubit.counter}');
-        
+
         cubit.changeIndex(index);
         if (index == 0) {
           cubit.status = 'tasks';
-          
         } else if (index == 1) {
           cubit.status = 'inprogress';
         } else if (index == 2) {
@@ -60,7 +59,7 @@ class CategoryCard extends StatelessWidget {
         } else if (index == 3) {
           cubit.status = 'finished';
         }
-        cubit.getTasks();
+        cubit.getTasks(page: 1);
       },
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(
