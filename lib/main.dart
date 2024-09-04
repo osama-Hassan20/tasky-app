@@ -10,6 +10,8 @@ import 'core/utils/local_service_helper/constant.dart';
 import 'core/utils/size_config.dart';
 import 'features/home/presentation/manager/home_cubit/cubit.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
@@ -18,6 +20,7 @@ Future<void> main() async {
   onBoarding = CacheHelper.getData(key: 'onBoarding');
   token = CacheHelper.getData(key: 'TokenId');
   refreshToken = CacheHelper.getData(key: 'RefreshTokenId');
+
   runApp(const MyApp());
 }
 
@@ -41,6 +44,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Tasky App',
         home: SplashView(),

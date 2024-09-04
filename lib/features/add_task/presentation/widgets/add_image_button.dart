@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/features/add_task/presentation/manager/cubit/cubit.dart';
+import 'package:tasky/features/add_task/presentation/widgets/fun.dart';
 
 class AddImageButton extends StatelessWidget {
   const AddImageButton({
@@ -15,7 +16,8 @@ class AddImageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await cubit.pickImage(ImageSource.gallery);
+        await cubit.pickImage(imageSource: ImageSource.gallery);
+        // showSelectPhotoOptions(context);
       },
       child: SizedBox(
         width: double.infinity,

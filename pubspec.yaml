@@ -53,6 +53,7 @@ dependencies:
   equatable: ^2.0.5
   connectivity_plus: ^6.0.5
   restart_app: ^1.2.1
+  flutter_image_compress: ^2.3.0
   
 #  skeletonizer: ^1.4.2
 

@@ -23,11 +23,7 @@ final class UploadImageSuccess extends AddTaskState {
   UploadImageSuccess(this.imageUrl);
 }
 
-final class UploadImageError extends AddTaskState {
-  final String error;
-
-  UploadImageError(this.error);
-}
+final class UploadImageError extends AddTaskState {}
 
 final class EditTaskLoading extends AddTaskState {}
 
@@ -38,3 +34,5 @@ final class EditTaskError extends AddTaskState {}
 final class RemoveTaskImageState extends AddTaskState {}
 
 final class PickImageSuccessState extends AddTaskState {}
+
+final class CompressAndUploadImageState extends AddTaskState {}

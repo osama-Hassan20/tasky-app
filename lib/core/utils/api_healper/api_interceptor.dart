@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tasky/core/utils/api_healper/dio_helper.dart';
 import 'package:tasky/core/utils/api_healper/end_point.dart';
+import 'package:tasky/features/home/presentation/manager/function.dart';
 
 import '../local_service_helper/cache_helper.dart';
 import '../local_service_helper/constant.dart';
@@ -35,7 +36,12 @@ class ApiInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       await _refreshToken();
       err.requestOptions.headers['Authorization'] = 'Bearer $token';
-      return handler.resolve(await DioHelper.dio.fetch(err.requestOptions));
+      return handler.resolve(
+        await DioHelper.dio.fetch(err.requestOptions),
+      );
+    } else if (err.response?.statusCode == 403) {
+      forbiddenOut();
+      return handler.next(err);
     }
 
     return handler.next(err);
