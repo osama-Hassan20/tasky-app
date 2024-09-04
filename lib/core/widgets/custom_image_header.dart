@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tasky/core/utils/size_config.dart';
-
 import '../utils/app_images.dart';
 
 class CustomImageHeader extends StatelessWidget {

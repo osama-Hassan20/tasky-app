@@ -13,7 +13,8 @@ class MenuPopUp extends StatelessWidget {
   const MenuPopUp({
     super.key,
     required this.cubit,
-    required this.taskModel, required this.delete, 
+    required this.taskModel,
+    required this.delete,
   });
 
   final HomeCubit cubit;
@@ -24,7 +25,9 @@ class MenuPopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     var taskCubit = AddTaskCubit.get(context);
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert,),
+      icon: const Icon(
+        Icons.more_vert,
+      ),
       color: Colors.white,
       padding: const EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
@@ -34,67 +37,101 @@ class MenuPopUp extends StatelessWidget {
         return [
           PopupMenuItem<String>(
               onTap: () {
-                
-                delete ? navigateTo(context, EditTaskView(taskModel: taskModel,)): taskModel.status =='waiting' ? taskCubit.editTask(
-                  image: File(taskModel.image!),
-                    title: taskModel.title!,
-                     desc: taskModel.desc!,
-                      priority: taskModel.priority!,
-                       taskId: taskModel.id!,
-                        status: 'finished',
-                         context: context
-                         ):taskCubit.editTask(
-                          image: File(taskModel.image!),
-                    title: taskModel.title!,
-                     desc: taskModel.desc!,
-                      priority: taskModel.priority!,
-                       taskId: taskModel.id!,
-                        status: 'waiting',
-                         context: context
-                         );
+                delete
+                    ? navigateTo(
+                        context,
+                        EditTaskView(
+                          taskModel: taskModel,
+                        ))
+                    : taskModel.status == 'waiting'
+                        ? taskCubit.editTask(
+                            image: 'File(taskModel.image!)',
+                            title: taskModel.title!,
+                            desc: taskModel.desc!,
+                            priority: taskModel.priority!,
+                            taskId: taskModel.id!,
+                            status: 'finished',
+                            context: context)
+                        : taskCubit.editTask(
+                            image: 'File(taskModel.image!)',
+                            title: taskModel.title!,
+                            desc: taskModel.desc!,
+                            priority: taskModel.priority!,
+                            taskId: taskModel.id!,
+                            status: 'waiting',
+                            context: context);
               },
-              value: delete ? 'edit':taskModel.status =='waiting' ? 'finished' :'waiting',
+              value: delete
+                  ? 'edit'
+                  : taskModel.status == 'waiting'
+                      ? 'finished'
+                      : 'waiting',
               child: Opacity(
                 opacity: 0.87,
-                child: Text(delete ? 'Edit':taskModel.status =='waiting' ?'Finished' :'Waiting',
-                    style:
-                    delete ?  AppStyles.styleMedium16(context) : taskModel.status =='waiting' ? AppStyles.styleMedium16(context).copyWith(color: Color(0xff0087FF)): AppStyles.styleMedium16(context).copyWith(color: Color(0xffFF7D53))
-                ),
+                child: Text(
+                    delete
+                        ? 'Edit'
+                        : taskModel.status == 'waiting'
+                            ? 'Finished'
+                            : 'Waiting',
+                    style: delete
+                        ? AppStyles.styleMedium16(context)
+                        : taskModel.status == 'waiting'
+                            ? AppStyles.styleMedium16(context)
+                                .copyWith(color: Color(0xff0087FF))
+                            : AppStyles.styleMedium16(context)
+                                .copyWith(color: Color(0xffFF7D53))),
               )),
           PopupMenuItem<String>(
-            value: delete ? 'delete' : taskModel.status =='waiting' || taskModel.status =='finished'? 'inprogress' : 'finished',
+            value: delete
+                ? 'delete'
+                : taskModel.status == 'waiting' ||
+                        taskModel.status == 'finished'
+                    ? 'inprogress'
+                    : 'finished',
             child: Opacity(
               opacity: 0.87,
               child: Text(
-                delete ?  'Delete': taskModel.status =='waiting'|| taskModel.status =='finished' ? 'Inprogress' : 'finished',
+                delete
+                    ? 'Delete'
+                    : taskModel.status == 'waiting' ||
+                            taskModel.status == 'finished'
+                        ? 'Inprogress'
+                        : 'finished',
                 textAlign: TextAlign.right,
-                style: 
-                 delete ?  
-                 AppStyles.styleMedium16(context).copyWith(color: Color(0xFFFF7D53)) : taskModel.status =='waiting' || taskModel.status =='finished'? AppStyles.styleMedium16(context)
-                    .copyWith(
-                  color: const Color(0xFF5F33E1),
-                ) : AppStyles.styleMedium16(context).copyWith(color: Color(0xff0087FF)),
+                style: delete
+                    ? AppStyles.styleMedium16(context)
+                        .copyWith(color: Color(0xFFFF7D53))
+                    : taskModel.status == 'waiting' ||
+                            taskModel.status == 'finished'
+                        ? AppStyles.styleMedium16(context).copyWith(
+                            color: const Color(0xFF5F33E1),
+                          )
+                        : AppStyles.styleMedium16(context)
+                            .copyWith(color: Color(0xff0087FF)),
               ),
             ),
             onTap: () {
-              delete ? cubit.deleteTask(
-                  taskId: taskModel.id ?? '') : taskModel.status =='waiting' || taskModel.status =='finished'? taskCubit.editTask(
-                    image: File(taskModel.image!),
-                    title: taskModel.title!,
-                     desc: taskModel.desc!,
-                      priority: taskModel.priority!,
-                       taskId: taskModel.id!,
-                        status: 'inprogress',
-                         context: context
-                         ):taskCubit.editTask(
-                    title: taskModel.title!,
-                     desc: taskModel.desc!,
-                      priority: taskModel.priority!,
-                      image: File(taskModel.image!),
-                       taskId: taskModel.id!,
-                        status: 'finished',
-                         context: context
-                         );
+              delete
+                  ? cubit.deleteTask(taskId: taskModel.id ?? '')
+                  : taskModel.status == 'waiting' ||
+                          taskModel.status == 'finished'
+                      ? taskCubit.editTask(
+                          image: 'File(taskModel.image!)',
+                          title: taskModel.title!,
+                          desc: taskModel.desc!,
+                          priority: taskModel.priority!,
+                          taskId: taskModel.id!,
+                          status: 'inprogress',
+                          context: context)
+                      : taskCubit.editTask(
+                          title: taskModel.title!,
+                          desc: taskModel.desc!,
+                          priority: taskModel.priority!,
+                          image: 'File(taskModel.image!)',
+                          taskId: taskModel.id!,
+                          status: 'finished',
+                          context: context);
             },
           ),
         ];

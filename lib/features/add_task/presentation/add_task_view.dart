@@ -3,11 +3,10 @@ import 'package:cherry_toast/resources/arrays.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:tasky/core/utils/app_images.dart';
 import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/core/utils/size_config.dart';
+import 'package:tasky/features/add_task/presentation/widgets/add_image_button.dart';
+import 'package:tasky/features/add_task/presentation/widgets/custom_add_task_appbar.dart';
 import 'package:tasky/features/add_task/presentation/widgets/custom_title_tasks.dart';
 
 import '../../../core/widgets/custom_button.dart';
@@ -52,37 +51,18 @@ class _AddTaskViewState extends State<AddTaskView> {
       create: (context) => AddTaskCubit(),
       child: BlocConsumer<AddTaskCubit, AddTaskState>(
         listener: (context, state) {
-          var cubit = AddTaskCubit.get(context);
-          if (state is HomeTaskImagePickedSuccessState) {
-            cubit.uploadImage(image: cubit.taskImage!);
-          }
           if (state is AddTaskSuccess) {
             CherryToast.success(
               title: const Text('Added Successfully'),
               animationType: AnimationType.fromTop,
             ).show(context);
-            // Navigator.pop(context);
           }
         },
         builder: (context, state) {
           var cubit = AddTaskCubit.get(context);
           return Scaffold(
-            appBar: AppBar(
-                title: Text('Add new task',
-                    style: AppStyles.styleBold16(context)
-                        .copyWith(color: const Color(0xFF24252C))),
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Transform.rotate(
-                      angle: -1.57079633 * 2,
-                      child: SvgPicture.asset(
-                        ImageAssets.arrowIcon,
-                        // ignore: deprecated_member_use
-                        color: Colors.black,
-                      )),
-                )),
+            appBar:
+                customAddTaskAppbar(context: context, title: 'Add new task'),
             body: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(SizeConfig.defaultSize! * 2.2),
@@ -91,69 +71,42 @@ class _AddTaskViewState extends State<AddTaskView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(),
-                      InkWell(
-                        onTap: () async {
-                          await cubit.pickImage(ImageSource.gallery);
-                          // cubit.pickFile();
-                        },
-                        child: DottedBorder(
-                          radius: const Radius.circular(10),
-                          dashPattern: const [4, 4],
-                          strokeWidth: 2,
-                          borderType: BorderType.RRect,
-                          color: const Color(0xFF5F33E1),
-                          child: cubit.imageFile != null
-                              ? Stack(
-                                  alignment: AlignmentDirectional.topEnd,
-                                  children: [
-                                    Container(
-                                      height: 200.0,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          image: FileImage(cubit.imageFile!),
-                                          fit: BoxFit.cover,
-                                        ),
+                      DottedBorder(
+                        radius: const Radius.circular(10),
+                        dashPattern: const [4, 4],
+                        strokeWidth: 2,
+                        borderType: BorderType.RRect,
+                        color: const Color(0xFF5F33E1),
+                        child: cubit.imageFile != null
+                            ? Stack(
+                                alignment: AlignmentDirectional.topEnd,
+                                children: [
+                                  Container(
+                                    height: 200.0,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: FileImage(cubit.imageFile!),
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                    IconButton(
-                                      onPressed: () {
-                                        cubit.removeTaskImage();
-                                      },
-                                      icon: const CircleAvatar(
-                                        radius: 20.0,
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : SizedBox(
-                                  width: double.infinity,
-                                  height: 60,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.add_photo_alternate_outlined,
-                                        color: Color(0xFF5F33E1),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Add Img',
-                                        textAlign: TextAlign.center,
-                                        style: AppStyles.styleMedium19(context),
-                                      ),
-                                    ],
                                   ),
-                                ),
-                        ),
+                                  IconButton(
+                                    onPressed: () {
+                                      cubit.removeTaskImage();
+                                    },
+                                    icon: const CircleAvatar(
+                                      radius: 20.0,
+                                      child: Icon(
+                                        Icons.close,
+                                        size: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : AddImageButton(cubit: cubit),
                       ),
                       SizedBox(
                         height: SizeConfig.defaultSize! * 1.6,

@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tasky/core/utils/app_images.dart';
 import 'package:tasky/core/utils/app_styles.dart';
 import 'package:tasky/core/utils/navigate.dart';
 import 'package:tasky/core/utils/size_config.dart';
@@ -16,6 +13,8 @@ import 'package:tasky/core/widgets/custom_loading_animation.dart';
 import 'package:tasky/core/widgets/text_form_field.dart';
 import 'package:tasky/features/add_task/presentation/manager/cubit/cubit.dart';
 import 'package:tasky/features/add_task/presentation/manager/cubit/state.dart';
+import 'package:tasky/features/add_task/presentation/widgets/add_image_button.dart';
+import 'package:tasky/features/add_task/presentation/widgets/custom_add_task_appbar.dart';
 import 'package:tasky/features/add_task/presentation/widgets/custom_title_tasks.dart';
 import 'package:tasky/features/home/domain/models/tasks_model.dart';
 import 'package:tasky/features/home/presentation/home_view.dart';
@@ -57,6 +56,8 @@ class _EditTaskViewState extends State<EditTaskView> {
     dueDateController.text = widget.taskModel!.updatedAt!;
     statusController.text = widget.taskModel!.status!;
     priority = priorityController.text;
+    AddTaskCubit.get(context).imageFile = File(widget.taskModel!.image!);
+    image = widget.taskModel!.image!;
 
     super.initState();
   }
@@ -85,25 +86,9 @@ class _EditTaskViewState extends State<EditTaskView> {
       },
       builder: (context, state) {
         var cubit = AddTaskCubit.get(context);
-        // if(widget.taskEdit!){
-        cubit.taskImage = File(widget.taskModel!.image!);
+
         return Scaffold(
-          appBar: AppBar(
-              title: Text('Edit task',
-                  style: AppStyles.styleBold16(context)
-                      .copyWith(color: const Color(0xFF24252C))),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Transform.rotate(
-                    angle: -1.57079633 * 2,
-                    child: SvgPicture.asset(
-                      ImageAssets.arrowIcon,
-                      // ignore: deprecated_member_use
-                      color: Colors.black,
-                    )),
-              )),
+          appBar: customAddTaskAppbar(context: context, title: 'Edit task'),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(SizeConfig.defaultSize! * 2.2),
@@ -112,66 +97,53 @@ class _EditTaskViewState extends State<EditTaskView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        // showSelectPhotoOptions(context,cubit);
-                        cubit.pickFile();
-                      },
-                      child: DottedBorder(
-                        radius: const Radius.circular(10),
-                        dashPattern: const [4, 4],
-                        strokeWidth: 2,
-                        borderType: BorderType.RRect,
-                        color: const Color(0xFF5F33E1),
-                        child: cubit.taskImage != null
-                            ? Stack(
-                                alignment: AlignmentDirectional.topEnd,
-                                children: [
-                                  ConstrainedBox(
-                                    constraints:
-                                        const BoxConstraints(maxHeight: 225),
-                                    child: SizedBox(
-                                        width: double.maxFinite,
-                                        child: CustomCachedNetworkImage(
-                                            imageUrl:
-                                                '${widget.taskModel!.image}')),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      cubit.removeTaskImage();
-                                    },
-                                    icon: const CircleAvatar(
-                                      radius: 20.0,
-                                      child: Icon(
-                                        Icons.close,
-                                        size: 16.0,
+                    DottedBorder(
+                      radius: const Radius.circular(10),
+                      dashPattern: const [4, 4],
+                      strokeWidth: 2,
+                      borderType: BorderType.RRect,
+                      color: const Color(0xFF5F33E1),
+                      child: cubit.imageFile != null
+                          ? Stack(
+                              alignment: AlignmentDirectional.topEnd,
+                              children: [
+                                image == ''
+                                    ? Container(
+                                        height: 200.0,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            image: FileImage(cubit.imageFile!),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 225),
+                                        child: SizedBox(
+                                            width: double.maxFinite,
+                                            child: CustomCachedNetworkImage(
+                                                imageUrl: image)),
                                       ),
+                                IconButton(
+                                  onPressed: () {
+                                    cubit.removeTaskImage();
+                                    image = '';
+                                  },
+                                  icon: const CircleAvatar(
+                                    radius: 20.0,
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 16.0,
                                     ),
                                   ),
-                                ],
-                              )
-                            : SizedBox(
-                                width: double.infinity,
-                                height: 60,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.add_photo_alternate_outlined,
-                                      color: Color(0xFF5F33E1),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Add Img',
-                                      textAlign: TextAlign.center,
-                                      style: AppStyles.styleMedium19(context),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                      ),
+                              ],
+                            )
+                          : AddImageButton(cubit: cubit),
                     ),
                     SizedBox(
                       height: SizeConfig.defaultSize! * 1.6,
@@ -351,48 +323,6 @@ class _EditTaskViewState extends State<EditTaskView> {
                       ),
                     ),
                     SizedBox(
-                      height: SizeConfig.defaultSize! * 1.6,
-                    ),
-                    const CustomTitleTasks(
-                      text: 'Due date',
-                    ),
-                    SizedBox(
-                      height: SizeConfig.defaultSize! * 0.8,
-                    ),
-                    customTextFormField(
-                      controller: dueDateController,
-                      context: context,
-                      type: TextInputType.datetime,
-                      readOnly: true,
-                      validate: (value) {
-                        if (value!.isEmpty) {
-                          return 'Date is required';
-                        }
-                        return null;
-                      },
-                      hintText: 'choose due date...',
-                      suffix: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            showDatePicker(
-                              context: context,
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2030),
-                            ).then((onValue) {
-                              setState(() {
-                                dueDateController.text =
-                                    onValue.toString().split(' ')[0];
-                              });
-                            });
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.calendar_month,
-                          color: Color(0xFF5F33E1),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
                       height: SizeConfig.defaultSize! * 2.8,
                     ),
                     CustomButton(
@@ -405,10 +335,10 @@ class _EditTaskViewState extends State<EditTaskView> {
                           : const SizedBox(),
                       style: AppStyles.styleBold19(context),
                       onPressed: () {
-                        if (cubit.taskImage != null) {
+                        if (image != '' || cubit.path != '') {
                           if (formKey.currentState!.validate()) {
                             cubit.editTask(
-                                image: File(widget.taskModel!.image!),
+                                image: image,
                                 title: titleController.text,
                                 desc: descriptionController.text,
                                 priority: priority,
